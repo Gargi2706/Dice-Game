@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./App.css";
-import Heading from "./components/Heading ";
+import Heading from "./components/Heading/Heading";
 import Player from "./components/Player";
 import Result from "./components/Result";
 
@@ -9,6 +9,10 @@ function App() {
   const [player2, setPlayer2] = useState("1");
   const [result, setResult] = useState("");
   const [rolling, setRolling] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [player1Name, setPlayer1Name] = useState("");
+  const [player2Name, setPlayer2Name] = useState("");
+  const [playersReady, setPlayersReady] = useState(false);
 
   // function handleDice() {
   //   const dice1 = Math.floor(Math.random() * 6 + 1);
@@ -26,7 +30,7 @@ function App() {
   // }
 
   const rollDice = () => {
-    if (rolling) return;
+    if (rolling || gameOver) return;
 
     setRolling(true);
     setResult("");
@@ -46,27 +50,73 @@ function App() {
       setPlayer2(dice2);
 
       if (dice1 > dice2) {
-        setResult("Player 1 Won !!");
+        setResult(`${player1Name} Won !!`);
       } else if (dice2 > dice1) {
-        setResult("Player 2 Won !!");
+        setResult(`${player2Name} Won !!`);
       } else {
         setResult("Draw !!");
       }
 
       setRolling(false);
+      setGameOver(true);
     }, 1200);
+  };
+
+        const playAgain = () => {
+          setPlayer1(1);
+          setPlayer2(1);
+          setResult("");
+          setGameOver(false);
+        };
+
+  const startGame = () => {
+    if (!player1Name || !player2Name) {
+      alert("Please enter both player names");
+      return;
+    }
+    setPlayersReady(true);
   };
 
   return (
     <>
       <Heading />
 
-      <Player name="Player 1" dicevalue={player1} />
-      <Player name="Player 2" dicevalue={player2} />
+      {!playersReady ? (
+        <div className="name-card">
+          <h2>Enter Player Names</h2>
 
-      <Result  onroll = {rollDice} rolling ={rolling} result={result}  />
+          <input
+            type="text"
+            placeholder="Player 1 Name"
+            value={player1Name}
+            onChange={(e) => setPlayer1Name(e.target.value)}
+          />
 
-      
+          <input
+            type="text"
+            placeholder="Player 2 Name"
+            value={player2Name}
+            onChange={(e) => setPlayer2Name(e.target.value)}
+          />
+
+          <button onClick={startGame}>Start Game</button>
+        </div>
+      ) : (
+        <>
+          <div className="players-container">
+            <Player name={player1Name || "Player 1"} dicevalue={player1} />
+            <Player name={player2Name || "Player 2"} dicevalue={player2} />
+          </div>
+
+          <Result
+            onroll={rollDice}
+            rolling={rolling}
+            result={result}
+            gameOver={gameOver}
+            onPlayAgain={playAgain}
+          />
+        </>
+      )}
     </>
   );
 }

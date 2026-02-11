@@ -1,11 +1,11 @@
-import React from 'react'
-import App from '../App'
+import React from "react";
+import App from "../App";
 
 export default function Player(props) {
   return (
     <div>
-         <div className="player row justify-content-center mb-4">
-       <div className="section col-12 col-md-5 mb-3">
+     
+        <div className="section text-center">
           <p>{props.name}</p>
           <img
             className="dice-img"
@@ -13,7 +13,7 @@ export default function Player(props) {
             alt="dice-img"
           />
         </div>
-        </div>
-    </div>
-  )
+      </div>
+  
+  );
 }
